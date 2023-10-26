@@ -3,6 +3,8 @@ import App from "../App";
 import Home from "../components/Home";
 import Login from "../components/Login";
 import SignUp from "../components/SignUp";
+import PrivateRoute from "./PrivateRoute";
+import BookService from "../components/BookService";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +22,16 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <SignUp />,
+      },
+      {
+        path: "/book/:id",
+        element: (
+          <PrivateRoute>
+            <BookService />
+          </PrivateRoute>
+        ),
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/services/${params.id}`),
       },
     ],
   },

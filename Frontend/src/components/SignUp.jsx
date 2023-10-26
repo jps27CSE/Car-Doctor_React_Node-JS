@@ -1,11 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import img from "../assets/images/login/login.svg";
 import { useContext } from "react";
 import { AuthContext } from "../Provider/AuthProvider";
+import { updateProfile } from "firebase/auth";
 
 const SignUp = () => {
   const { createUser } = useContext(AuthContext);
-
+  const navigate = useNavigate();
   const handleSignUp = (event) => {
     event.preventDefault();
     const form = event.target;
@@ -17,7 +18,11 @@ const SignUp = () => {
     createUser(email, password)
       .then((result) => {
         const user = result.user;
+        updateProfile(result.user, {
+          displayName: name,
+        });
         console.log(user);
+        navigate("/");
       })
       .catch((error) => console.log(error));
   };
@@ -59,7 +64,7 @@ const SignUp = () => {
                   <span className="label-text">Confirm Password</span>
                 </label>
                 <input
-                  type="text"
+                  type="password"
                   name="password"
                   placeholder="password"
                   className="input input-bordered"
