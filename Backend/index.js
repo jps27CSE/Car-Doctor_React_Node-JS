@@ -71,9 +71,16 @@ async function run() {
       res
         .cookie("token", token, {
           httpOnly: true,
-          secure: false,
+          secure: true,
+          sameSite: "none",
         })
         .send({ success: true });
+    });
+
+    app.post("/logout", async (req, res) => {
+      const user = req.body;
+      console.log("logging out", user);
+      res.clearCookie("token", { maxAge: 0 }).send({ success: true });
     });
 
     app.get("/services", async (req, res) => {
@@ -86,10 +93,7 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const option = {
-        title: 1,
-        price: 1,
-        service_id: 1,
-        img: 1,
+        projection: { title: 1, price: 1, service_id: 1, img: 1 },
       };
 
       const result = await serviceCollection.findOne(query, option);
